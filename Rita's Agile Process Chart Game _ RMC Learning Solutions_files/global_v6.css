@@ -1,0 +1,139 @@
+@charset "utf-8";
+/* CSS Document */
+
+@font-face {
+  font-family: 'RobotoCondensed';
+  src: url('RobotoCondensed-Regular.eot'); /* IE9 Compat Modes */
+  src: url('RobotoCondensed-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('RobotoCondensed-Regular.woff') format('woff'), /* Pretty Modern Browsers */
+       url('RobotoCondensed-Regular.ttf')  format('truetype'), /* Safari, Android, iOS */
+       url('RobotoCondensed-Regular.svg#svgFontName') format('svg'); /* Legacy iOS */
+}
+
+
+.instruction_text{
+	padding:5px;
+	font-size:17px;
+	font-stretch:condensed;
+	font-style:italic;
+	font-family: "RobotoCondensed", Helvetica, sans-serif;
+	color:#0216EF;
+}
+.note_text{
+	line-height:95%;
+	position:absolute;
+	padding:25px; 
+	font-size:17px;
+	font-stretch:condensed;
+	font-family: "RobotoCondensed", Helvetica, sans-serif;
+}
+.page_text{
+	/*position:absolute;*/
+	font-size:17px;
+	font-stretch:condensed;
+	font-family: "RobotoCondensed", Helvetica, sans-serif;
+}
+
+.buttons_hover {
+	-webkit-transition: all 400ms;      /* Safari */
+	transition: all 0ms;
+}
+.buttons_hover:hover {
+	-ms-transform: scale(1.05, 1.05);      /* IE 9 */
+	-webkit-transform: scale(1.05, 1.05);   /* Safari */
+	transform: scale(1.05, 1.05);
+	background-color:#2980B9;
+	color: white;
+}
+
+.buttons {
+	cursor: pointer;
+	padding-top:15px;
+	padding-bottom:15px;
+	font-stretch:condensed;
+	font-size:14px;
+	font-family:"RobotoCondensed", Helvetica, sans-serif;
+	font-weight:400;
+	position:absolute;
+	background-color:#F28C0A;
+	color:white;
+	float: left;
+	margin-bottom: 15px;
+	border-radius: 3px;
+	border:none;
+	width: 100%;
+}
+
+.next-Blocker {
+	position:absolute;
+	width: 88px;  
+    height: 56px;
+	background-color:black;
+}
+
+#audio-player{
+	position: absolute;
+	margin-top:11px;
+	margin-left:100px;
+	width:500px;
+}
+
+.audio-player .cover {
+    position: absolute;
+    top: 5px;
+    left: 15px;
+}
+
+
+div.audio-player {
+    position: absolute;
+    width: 600px;
+    height: 50px;
+ 
+    background: #4c4e5a;
+    background: -webkit-linear-gradient(top, #4c4e5a 0%, #2c2d33 100%);
+    background: -moz-linear-gradient(top, #4c4e5a 0%, #2c2d33 100%);
+    background: -o-linear-gradient(top, #4c4e5a 0%, #2c2d33 100%);
+    background: -ms-linear-gradient(top, #4c4e5a 0%, #2c2d33 100%);
+    background: linear-gradient(top, #4c4e5a 0%, #2c2d33 100%);
+ 
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.unselectable {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	cursor:default;
+}
+
+.disabledbutton {
+    pointer-events: none;
+}
+
+
+/* This code changes the look of the scrollbars */
+ 
+/*  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 8px;
+}
+
+  ::-webkit-scrollbar-track {
+    /*background-color: rgba(57,57,57, .6);
+    border-radius: 8px;*/
+	/*border-radius: 10px;  
+    background-color: #ffffff; 
+}
+::-webkit-scrollbar-thumb {
+   /* border-radius: 8px;
+    background-color: rgba(156, 156, 156, .6);*/
+/*	background-color: rgba(0, 0, 0, .5);
+    border-radius: 10px;
+    border: 2px solid #ffffff;
+}*/

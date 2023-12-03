@@ -1,0 +1,260 @@
+// JavaScript Document
+
+var introText = "";
+var isIntro = true;
+var isRTL = false;
+
+var colHeader1 = "Feasibility";
+var colHeader2 = "Initiation";
+var colHeader3 = "Release Planning";
+var colHeader4 = "Iteration";
+var colHeader5 = "Close-Out";
+
+var testInstructions = "<br><b>TEST MODE</b><br>In Test Mode, you will have the opportunity to place and arrange ALL of the cards before seeing any feedback. <br><br>Once you have placed all the items, you will be able to click 'CHECK ANSWERS' to find out how accurate you were.";
+
+var practiceInstructions = "<b>PRACTICE MODE</b><br>Drag the blue cards below to the correct columns. You will get instant feedback on whether your choice was right or wrong, and you can keep trying to place each card in the correct column until you get the answer right. Once all the cards are placed, you can check the order of the cards in the FEASIBILITY COLUMN. Based on your accuracy, you can decide whether you want to try the exercise again in PRACTICE MODE, or to move on to the TEST MODE.";
+
+var modeBtnTxtSwitchToPractice = "Go to Practice Mode";
+var modeConfirmTxtSwitchToPractice = "This will end your current progress and start a new game in PRACTICE MODE.";
+var modeBtnTxtSwitchToTest = "Go to Test Mode";
+var modeConfirmTxtSwitchToTest = "This will end your current progress and start a new game in TEST MODE.";
+var accuracyTxt = "Your accuracy is";
+
+var accuracyInstTxt = "Now check to see if you placed all the cards correctly in the feasibility column.";
+var checkFeasibilityTxt = "Some of the Feasibility column cards are not in the correct order. Rearrange the cards until they are in the correct order and press the Check Feasibility Column Order button again.";
+var feasibilityAllCorrectTxt = "<b>You have placed all of the cards correctly!</b><br>Now try test mode.";
+var questionCounterTxt1 = "CARDS:        "
+var questionCounterTxt2 = " of "
+var questionCounterTxt3 = " to go"
+var correctFBtxt = "Correct. Try the next Card.";
+var incorrectFBtxt = "Incorrect. Try a different column.";
+var endPracticeModeCorrectTxt = "Correct. Try test mode now.";
+var columnLengthWarning1 = "This column can not have more than";
+var columnLengthWarning2 = " items";
+var languageBtnTxt = "Select Language";
+
+loadJSONdata();
+
+var columnPadTestMode = 2 // number of extra cards allowed in any column during test mode
+var columnLengthMax1 = 0;
+var columnLengthMax2 = 0;
+var columnLengthMax3 = 0;
+var columnLengthMax4 = 0;
+var columnLengthMax5 = 0;
+
+// COUNT CARDS
+for (var n = 1; n < 6; n++) {
+	$.each(pageLayout.cards,function(k,v){
+		if(v.matchID == n){
+			window['columnLengthMax'+n]++;
+		}
+	});
+	window['columnLengthMax'+n] = window['columnLengthMax'+n] + columnPadTestMode;
+	// add extra card because it's not counting 'RC' cards
+	if(n<5){
+		window['columnLengthMax'+n]++;
+	}
+}
+
+
+// ----------------- CARDS THAT APPEAR IN MORE THAN ONE COLUMN ----------------------//
+//      - Hold daily stand-up meetings (3 AND 4)        -- matchID = HD
+//      - remove impediments for the team (2, 3, AND 4) -- matchID = RI
+//      - prepare stories of next iteration (3 AND 4)   -- matchID = PS
+
+// put this in a function so I could "reload" it when reset button is clicked
+function loadJSONdata(){
+	pageLayout = {
+		"cards": [
+	// ---------  Feasibility CARDS --------- 
+			{
+				"matchID": "1",
+				"feasibilityID": "0",
+				"text": "Project visioning takes place"
+			},
+			{
+				"matchID": "1",
+				"feasibilityID": "1",
+				"text": "Establish business case"
+			},
+			{
+				"matchID": "1",
+				"feasibilityID": "2",
+				"text": "Create high-level user stories (Features)"
+			},
+			{
+				"matchID": "1",
+				"feasibilityID": "3",
+				"text": "Establish high-level estimates"
+			},
+			
+	// ---------  Initiation CARDS --------- 
+			{
+				"matchID": "2",
+				"text": "Develop project charter"
+			}, 
+			{
+				"matchID": "2",
+				"text": "Build a story map"
+			},
+			{
+				"matchID": "2",
+				"text": "Create team charter"
+			},
+			{
+				"matchID": "2",
+				"text": "Create personas"
+			},
+			{
+				"matchID": "2",
+				"text": "Identify stakeholders and contact"
+			},
+			{
+				"matchID": "2",
+				"text": "Create backlog of features"
+			},
+			{
+				"matchID": "2",
+				"text": "Create high-level estimates using affinity estimating"
+			},
+			{
+				"matchID": "2",
+				"text": "Create product roadmap using story maps"
+			},
+			{
+				"matchID": "RI",
+				"text": "Remove impediments for the team"
+			},
+			
+	// ---------  Release Planning CARDS --------- 
+			{
+				"matchID": "3",
+				"text": "Slice user stories (decompose features)"
+			},
+			{
+				"matchID": "3",
+				"text": "Build a release plan"
+			},
+			{
+				"matchID": "HD",
+				"text": "Hold daily stand-up meetings"
+			},
+			{
+				"matchID": "3",
+				"text": "Perform story estimation using Planning Poker<sup>®</sup>"
+			},
+			{
+				"matchID": "3",
+				"text": "Focus on how to deliver value"
+			},
+			{
+				"matchID": "3",
+				"text": 'Define "done"'
+			},
+			{
+				"matchID": "3",
+				"text": "Estimate how much work can be done"
+			},
+			{
+				"matchID": "3",
+				"text": "Calculate team velocity"
+			},
+			{
+				"matchID": "3",
+				"text": "Reprioritize the backlog"
+			},
+			{
+				"matchID": "3",
+				"text": "Define the first iteration goal"
+			},
+			{
+				"matchID": "3",
+				"text": "Ensure there is shared understanding among team members"
+			},
+			{
+				"matchID": "PS",
+				"text": "Prepare stories of next iteration"
+			},
+			{
+				"matchID": "RI",
+				"text": "Remove impediments for the team"
+			},
+			
+// ---------  Iteration CARDS --------- 
+			{
+				"matchID": "4",
+				"text": "Perform iteration planning"
+			},
+			{
+				"matchID": "4",
+				"text": "Build features as described in user stories"
+			},
+			{
+				"matchID": "HD",
+				"text": "Hold daily stand-up meetings"
+			},
+			{
+				"matchID": "RI",
+				"text": "Remove impediments for the team"
+			},
+			{
+				"matchID": "4",
+				"text": "Update burnup charts"
+			},
+			{
+				"matchID": "4",
+				"text": "Identify acceptance tests for stories"
+			},
+			{
+				"matchID": "4",
+				"text": "Prepare accceptance tests"
+			}, 
+			{
+				"matchID": "4",
+				"text": "Run exploratory tests"
+			},
+			{
+				"matchID": "4",
+				"text": "Test user stories"
+			},
+			{
+				"matchID": "4",
+				"text": "Hold iteration review"
+			},
+			{
+				"matchID": "4",
+				"text": "Hold retrospective"
+			},
+			{
+				"matchID": "PS",
+				"text": "Prepare stories of next iteration"
+			},
+			{
+				"matchID": "4",
+				"text": "Collaborate with team to answer questions and obtain story signoff"
+			},
+			
+	// ---------  Close-Out CARDS --------- 
+			{
+				"matchID": "5",
+				"text": "Obtain final release approval"
+			},
+			{
+				"matchID": "5",
+				"text": "Turn over maintenance of product release to another team"
+			},
+			{
+				"matchID": "5",
+				"text": "Hold final retrospective"
+			},
+			{
+				"matchID": "5",
+				"text": "Ensure procurement closure"
+			},
+			{
+				"matchID": "5",
+				"text": "Archive project artifacts"
+			}
+		]
+	};
+}

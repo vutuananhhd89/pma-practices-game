@@ -1,0 +1,803 @@
+var correctsound = new Audio("sound/correct.mp3"); // buffers automatically when created
+var incorrectsound = new Audio("sound/incorrect.mp3"); // buffers automatically when create
+var shufflesound = new Audio("sound/shufflingCards.mp3"); // buffers automatically when created
+
+var isIpad = false;
+var isIE = !!navigator.userAgent.match(/Trident/g) || !!navigator.userAgent.match(/MSIE/g);
+
+var cardArray = pageLayout.cards;
+var totalCards = cardArray.length;
+var currentCard = 1;
+var takenFrom0 = true;
+var takenFrom1 = false;
+var practiceMode = true;
+
+var placedDupHD3 = false;
+var placedDupHD4 = false;
+var placedDupRI2 = false;
+var placedDupRI3 = false;
+var placedDupRI4 = false;
+var placedDupPS3 = false;
+var placedDupPS4 = false;
+
+var columnHeight1 = 0;
+var columnHeight2 = 0;
+var columnHeight3 = 0;
+var columnHeight4 = 0;
+var columnHeight5 = 0;
+var columnStartingHeight1 = $('#items1').height();
+var columnStartingHeight2 = $('#items2').height();
+var columnStartingHeight3 = $('#items3').height();
+var columnStartingHeight4 = $('#items4').height();
+var columnStartingHeight5 = $('#items5').height();
+var takenFromColumn;
+
+var totalCorrect = 0;
+var totalCorrectFeasibility = 0;
+var attempts = 0;
+var score = 100;    
+
+// translation option vars
+// no translation for Agile yet
+/*var language1 = '<a target="_parent" href="https://rmcls.com/process-chart-game-v9"><strong>English</strong></a>';
+var language2 = '<a target="_parent" href="https://rmcls.com/process-chart-game-v9-PT"><strong>Português (do Brasil)</strong><i><span>Brazilian Portuguese</i></span></a>';
+var language3 = '<a target="_parent" href="https://rmcls.com/process-chart-game-v9-ES"><strong>Español</strong><i><span>Spanish</i></span></a>';
+var language4 = '<a target="_parent" href="https://rmcls.com/process-chart-game-v9-AR"><strong>العربية</strong><i><span>Arabic</i></span></a>';
+*//* // For testing locally
+var language1 = '<a href="processChart_v5.html"><img src="images/english.png">English</a>';
+var language2 = '<a href="processChart_v5_PT.html"><img src="images/brazil.png">Português (do Brasil)<i><span>Brazilian Portuguese</i></span></a>';
+var language3 = '<a href="processChart_v5_ES.html"><img src="images/spain.png">Español<i><span>Spanish</i></span></a>';
+*/
+// translation option code
+// no translation for Agile yet
+/*$('.dropdown').html('<button onclick="dropDownClicked()" class="dropbtn">'+languageBtnTxt+'</button><div id="language-dropdown" class="dropdown-content">'+language1+language2+language3+language4+'<a href="mailto:elearning@rmcls.com?subject=Add%20a%20New%20Language%20to%20Rita\'s%20Process%20Chart%20Game"><img src="images/request.png"><strong>Request Language</strong></a>');*/
+
+
+//$('.dropdown').hide();
+$('#mask').hide();
+$("#check-button").hide();
+$("#begin-button").hide();
+$("#check-feasibility-button").hide();
+$("#reset-confirm").hide();
+$("#agile-confirm").hide();
+$("#mode-confirm").hide();
+$(".shuffle_cards").hide();
+$('#entire-game').hide();
+
+$("#header1").html(colHeader1);
+$("#header2").html(colHeader2);
+$("#header3").html(colHeader3);
+$("#header4").html(colHeader4);
+$("#header5").html(colHeader5);
+
+$("#instructions").html(practiceInstructions);
+//$("#instructions").append('<br><br><input id="mode-button" class="buttons buttons_hover" type="button" value="Go to Test Mode">');
+
+if( /iPad/i.test(navigator.userAgent) ) {
+	isIpad = true;
+	//$('#mode-button').css({'margin-top':'510px'})
+	$("#begin-button").show();
+}
+if(isIE){
+	$('#instructions').css({'font-size':'13px'})
+}
+
+if(isIntro){
+	//console.log("isIntro = " + isIntro)
+	$("#intro").show();
+}
+$("#begin-button").on("click", function(){
+	// sound will play when button is pressed. This is the ONLY way I could get sound to play throughout the rest of the game. If this is removed, sound effects wont work when cards are placed. 
+	correctsound.play();
+	incorrectsound.play();
+});
+$("#intro").on("click", function(){
+	$("#intro").hide();
+	$('#entire-game').show();
+	//$('.dropdown').show();
+});
+
+$("#reset-button").on("click", function(){
+	$('#mask').show();
+	$("#reset-confirm").show();
+});
+$("#reset-continue-button").on("click", function(){
+	$('#mask').hide();
+	$("#reset-confirm").hide();
+	$("#check-button").hide();
+	$("#check-feasibility-button").hide();
+	resetCards();
+});
+$("#reset-cancel-button").on("click", function(){
+	$('#mask').hide();
+	$("#reset-confirm").hide();
+});
+$("#instructions-button").on("click", function(){
+	$("#intro").show();
+	$('#entire-game').hide();
+	//$('.dropdown').hide();
+});
+
+$("#mode-button").on("click", function(){
+	$('#mask').show();
+	$("#mode-confirm").show();
+});
+$("#mode-cancel-button").on("click", function(){
+	$('#mask').hide();
+	$("#mode-confirm").hide();
+});
+$("#mode-continue-button").on("click", function(){
+	$('#mask').hide();
+	$("#mode-confirm").hide();
+	$("#check-button").hide();
+	switchModes();
+});
+
+// go to PM Game
+$("#agile-button").on("click", function(){
+	$('#mask').show();
+	$("#agile-confirm").show();
+});
+$("#agile-cancel-button").on("click", function(){
+	$('#mask').hide();
+	$("#agile-confirm").hide();
+});
+$("#agile-continue-button").on("click", function(){
+	$('#mask').hide();
+	$("#agile-confirm").hide();
+	$("#check-button").hide();
+	//location.href = 'https://rmcls.com/process-chart-game-v10/';
+	window.open('https://rmcls.com/process-chart-game-v10/', '_blank');
+});
+
+$.fn.randomize = function(selector){
+  var $elems = selector ? $(this).find(selector) : $(this).children();
+  for (var i = $elems.length; i >= 0; i--) {
+    $(this).append($elems[Math.random() * i | 0]);
+  }
+  return this;
+}
+
+$("#shuffle-button").on("click", function(){
+	$(".shuffle_cards").show();
+	// match the shuffle cards to the css of the card that's visible 
+	$(".shuffle_cards").css({'margin-left' : $('#items0').offset().left -10, 'margin-top' : $('#items0').offset().top, 'width' : $('#items0').width(), 'height' : $('#items0').children().height()});
+	shufflesound.play();
+	var randomNum = Math.floor(Math.random() * 41) - 20;
+	$("#items0").animate({top: '4px'}, "fast");
+	$("#items0").animate({left: '4px'}, "fast");
+	$("#items0").animate({top: '0px'}, "fast");
+	$("#items0").animate({left: '0px'}, "fast",function() {
+		$(".shuffle_cards").hide();
+	});
+	$("#shuffle1").animate({left: '-6px'}, "fast");
+	$("#shuffle1").animate({top: '-6px'}, "fast");
+	$("#shuffle1").animate({left: '0px'}, "fast");
+	$("#shuffle1").animate({top: '0px'}, "fast");
+	$("#shuffle2").animate({left: '2px'}, "fast");
+	$("#shuffle2").animate({top: '-8px'}, "fast");
+	$("#shuffle2").animate({left: '0px'}, "fast");
+	$("#shuffle2").animate({top: '0px'}, "fast");
+	$("#shuffle3").animate({left: '-2px'}, "fast");
+	$("#shuffle3").animate({top: '8px'}, "fast");
+	$("#shuffle3").animate({left: '0px'}, "fast");
+	$("#shuffle3").animate({top: '0px'}, "fast");
+	
+	$("#items0").randomize();  
+	$("#items0 li").hide();
+	//console.log("child = " + $("#items0 > li:first-child").attr("id"));
+	$('#' + $("#items0 > li:first-child").attr("id")).show();
+});
+
+function switchModes(){
+	if(practiceMode){
+		// go to TEST MODE
+		$("#check-feasibility-button").hide();
+        $("#mode-button").val(modeBtnTxtSwitchToPractice);
+		$("#mode-confirm span").text(modeConfirmTxtSwitchToPractice);
+		$("#instructions").html(testInstructions);
+		//$("#items0").css({"margin-top":"150px"});
+		//$("#question-counter").css({"margin-top":"200px"});
+		practiceMode = false;
+		resetCards();
+	}
+	else{
+		// go to PRACTICE MODE
+        $("#mode-button").val(modeBtnTxtSwitchToTest);
+		$("#mode-confirm span").text(modeConfirmTxtSwitchToTest);
+		//$("#items0").css({"margin-top":"250px"})
+		$("#instructions").html(practiceInstructions);
+		//$("#question-counter").css({"margin-top":"310px"});
+		practiceMode = true;
+		resetCards();
+	}
+}
+$("#check-button").on("click", function(){
+	totalCorrect = 0;
+	totalCorrectFeasibility = 0;
+	placedDupHD3 = false;
+	placedDupHD4 = false;
+	placedDupRI2 = false;
+	placedDupRI3 = false;
+	placedDupRI4 = false;
+	placedDupPS3 = false;
+	placedDupPS4 = false;
+	//$("#check-button").hide();
+	
+	// check all columns except feasibility
+	$('li').each(function(i){
+		//console.log("card = " + $(this).attr("id"));
+		if( /*($(this).attr("matchid") == 1 && $(this).attr("column") == "items1") || */  ($(this).attr("matchid") == 2 && $(this).attr("column") == "items2") || ($(this).attr("matchid") == 3 && $(this).attr("column") == "items3") || ($(this).attr("matchid") == 4 && $(this).attr("column") == "items4") || ($(this).attr("matchid") == 5 && $(this).attr("column") == "items5")){
+			//doCorrectStuff($("#"+$(this).attr("id")));
+			totalCorrect++
+			doCorrectStuffTestMode($(this));
+		}
+		else{
+			doIncorrectStuffTestMode($(this));
+		}
+		if($(this).attr("matchid") == "HD"){
+			handleDupHDCardTestMode($(this), $(this).attr("column"));
+		}
+		else if($(this).attr("matchid") == "RI"){
+			handleDupRIcardTestMode($(this), $(this).attr("column"));
+		}
+		else if($(this).attr("matchid") == "PS"){
+			handleDupPScardTestMode($(this), $(this).attr("column"));
+		}
+	});
+	
+	// check feasibility column
+	var idsInOrder = [];
+	$('li').each(function(i){
+		// if the card has a feasibilityID and is already placed in the feasibility column
+		if($(this).attr('feasibilityID') != 'undefined' && $(this).parent().attr('id') == 'items1'){
+			//console.log($(this));
+			idsInOrder.push($(this));
+			//idsInOrder.push($(this).attr("feasibilityID"));
+		}
+	});
+	$(idsInOrder).each(function(i){
+		// if the card is in the correct spot in the feasibility column
+		if(idsInOrder[i].attr('feasibilityID') == i){
+			$('#'+idsInOrder[i].attr('id')).css({"background-color":"#A7D8B3"});
+			totalCorrectFeasibility++;
+		}
+		else{
+			$('#'+idsInOrder[i].attr('id')).css({"background-color":"#EFBDC7"});
+		}
+	});
+	console.log("totalCorrect  = " + totalCorrect);
+	console.log("totalCorrectFeasibility = " + totalCorrectFeasibility);
+	console.log("totalCards = " + totalCards);
+	score = Math.round(((totalCorrect + totalCorrectFeasibility)/totalCards)*100);
+	$("#instructions").html("<br><br><br><br>" + accuracyTxt + " <b>" + score + "%.");
+});
+
+$("#check-feasibility-button").on("click", function(){
+	totalCorrectFeasibility = 0;
+	// create an array of cards placed in the feasibility colomn
+	var idsInOrder = [];
+	$("#instructions").html("<br><br>" + checkFeasibilityTxt);
+	$('li').each(function(i){
+		// if the card has a feasibilityID and is already placed in the feasibility column
+		if($(this).attr('feasibilityID') != 'undefined' && $(this).parent().attr('id') == 'items1'){
+			//console.log($(this));
+			idsInOrder.push($(this));
+			//idsInOrder.push($(this).attr("feasibilityID"));
+		}
+	});
+	//console.log("idsInOrder = " + idsInOrder);
+	$(idsInOrder).each(function(i){
+		//console.log(idsInOrder[i].attr('id'));
+		//console.log(idsInOrder[i].attr('feasibilityID'));
+		// if the card is in the correct spot in the feasibility column
+		if(idsInOrder[i].attr('feasibilityID') == i){
+			$('#'+idsInOrder[i].attr('id')).css({"background-color":"#A7D8B3"});
+			totalCorrectFeasibility++;
+		}
+		else{
+			$('#'+idsInOrder[i].attr('id')).css({"background-color":"#EFBDC7"});
+		}
+	});
+	// are all correct? 
+	//console.log("totalCorrectFeasibility = " + totalCorrectFeasibility);
+	//console.log("columnLengthMax2 = " + columnLengthMax2);
+	//console.log("columnPadTestMode = " + columnPadTestMode);
+	if(totalCorrectFeasibility == (columnLengthMax2 - columnPadTestMode)){
+		//console.log("ALL feasibility CARDS CORRECT");
+		$("#check-feasibility-button").hide();
+		$("#instructions").html("<br><br><br>" + feasibilityAllCorrectTxt);
+	}
+});
+
+function resetCards(){
+	$("#question-counter").show();
+	$("#shuffle-button").show();
+	placedDupHD3 = false;
+	placedDupHD4 = false;
+	placedDupRI2 = false;
+	placedDupRI3 = false;
+	placedDupRI4 = false;
+	placedDupPS3 = false;
+	placedDupPS4 = false;
+	
+	columnHeight1 = 0;
+	columnHeight2 = 0;
+	columnHeight3 = 0;
+	columnHeight4 = 0;
+	columnHeight5 = 0;
+	totalCorrect = 0;
+	attempts = 0;
+	score = 100;
+	
+	currentCard = 1;
+	takenFrom0 = true;
+	$("#feedback").html('');
+	totalCards = cardArray.length;
+	//console.log('reset, totalCards = ' + totalCards)
+	$("#items1").html('');
+	$("#items1").append('<div id="cloumn-fb1" class="column_fb"></div>');
+	$("#items2").html('');
+	$("#items2").append('<div id="cloumn-fb2" class="column_fb"></div>');
+	$("#items3").html('');
+	$("#items3").append('<div id="cloumn-fb3" class="column_fb"></div>');
+	$("#items4").html('');
+	$("#items4").append('<div id="cloumn-fb4" class="column_fb"></div>');
+	$("#items5").html('');
+	$("#items5").append('<div id="cloumn-fb5" class="column_fb"></div>');
+	if(practiceMode){
+		$("#instructions").html("<br><br><br>" + practiceInstructions);
+	}
+	else{
+		$("#instructions").html("<br><br><br>" + testInstructions);
+	}
+	
+	placeCards(cardArray);
+}
+
+function placeCards(cardArr){
+	shuffleArray(cardArr);
+	$("#items0").html('');
+	$.each(cardArr,function(k,v){
+		$("#items0").append('<li class="list" id="card'+(k+1)+'" column="0" matchid="'+v.matchID+'" feasibilityID="'+v.feasibilityID+'">'+v.text+'</li>');
+	});
+	$("#question-counter").html(questionCounterTxt1 + totalCards + questionCounterTxt2 + totalCards + questionCounterTxt3);
+	$(".list").hide();
+	$("#card1").show();
+}
+
+function adjustColumnHeight(card,spot){
+	var spotNum = spot.slice(5);
+	console.log("in adjustColumnHeight, spotNum = " + spotNum);
+	//adjust height of column
+	window['columnHeight' + spotNum] = window['columnHeight' + spotNum] + 8 + card.height();
+	//if(columnHeight5 >= ($('#items5').height() - 4)){
+	//console.log('isRTL = ' + isRTL);
+	//console.log('spotNum = ' + spotNum);
+	if(window['columnHeight' + spotNum] >= ($('#items'+spotNum).height() - 4)){
+		$('#items'+spotNum).css({'height':(window['columnHeight' + spotNum] + 5) + 'px'});
+		// push the click here graphic down
+		if((isRTL == false && spotNum==1)){
+			$('#click-here').css({'top': parseInt($('#items1').css('height')) + 50 + 'px'});
+		}
+		else if((isRTL == true) && (spotNum==5)){
+			//console.log('in if');
+			$('#click-here').css({'top': parseInt($('#items5').css('height')) + 50 + 'px'});
+		}
+	}
+	//console.log("card.height() = " + card.height());
+	//console.log("card.height() = " + card.height());
+	//console.log("columnHeight var = " + window['columnHeight' + spotNum]);
+	//console.log("droppable column total height = " + $('#items'+spotNum).height());
+}
+
+function adjustColumnHeightTestMode(card,spot,takenFrom){
+	takenFromNum = takenFrom.slice(5);
+	//console.log("in adjustColumnHeightTESTmode, card = " + card.attr('id'));
+	//console.log("in adjustColumnHeightTESTmode, spot = " + spot);
+	//console.log("in adjustColumnHeightTESTmode, takenFromNum = " + takenFromNum);
+	if(takenFrom == 'items0'){
+		// add to columnHeight var of landing spot column
+		window['columnHeight' + spot] = window['columnHeight' + spot] + 8 + card.height();
+	}
+	else{
+		// add to columnHeight var of landing spot column
+		window['columnHeight' + spot] = window['columnHeight' + spot] + 8 + card.height();
+		// subtract from columnHeight var of takenFrom spot column
+		window['columnHeight' + takenFromNum] = window['columnHeight' + takenFromNum] - 8 - card.height();
+		
+		// subtract from height of takenFrom column
+		if(window['columnHeight' + takenFromNum] >  window['columnStartingHeight' + takenFromNum]){
+			$('#items'+takenFromNum).css({'height':(window['columnHeight' + takenFromNum] + 5) + 'px'});
+		}
+	}
+	//adjust height of column
+	if(window['columnHeight' + spot] >= ($('#items'+spot).height() - 4)){
+		$('#items'+spot).css({'height':(window['columnHeight' + spot] + 5) + 'px'});
+		// push the click here graphic down
+		if(spot==1){
+			$('#click-here').css({'top': parseInt($('#items1').css('height')) + 50 + 'px'});
+		}
+	}
+	//console.log("card.height() = " + card.height());
+}
+
+function doCorrectStuff(card, spot){
+	//console.log("card = " + card.attr('matchid'));
+	//console.log("spot = " + spot);
+	correctsound.play();
+	$("#feedback").css({"color":"green"});
+	$("#feedback").html(correctFBtxt);	
+	attempts++;
+	
+	adjustColumnHeight(card,spot);
+	
+	// keep feasibility column cards blue (also accounted for the duplicate RC card)
+	if(card.attr('matchid') == 1 || ((card.attr('matchid') == 'RC') && (spot == 'items1')) ){
+		card.css({"background-color":"lightblue"});
+	}
+	else{
+		card.css({"background-color":"#A7D8B3"});
+		
+		//$('#' + $("#items0 > li:first-child").attr("id")).addClass('disabledbutton');
+		//$("#card" + currentCard).addClass('disabledbutton');
+		(card).addClass('disabledbutton');
+	}
+	currentCard++;
+	
+	$('#' + $("#items0 > li:first-child").attr("id")).show();
+	//$("#card" + currentCard).show();
+	
+	if(currentCard > totalCards){
+		//console.log("THE END");
+		doEndStuff();
+	}
+}
+function doIncorrectStuff(card){
+	attempts++;
+	card.css({"background-color":"#EFBDC7"});
+	incorrectsound.play();
+	//console.log("in doIncorrectStuff, card.attr('matchid') = " + card.attr('matchid'));
+	// if a second RC card is placed in the feasibility column, we want to be able to move it out. Adding class to set it apart from other RC cards
+	
+	if(card.attr('matchid') == 'RC'){
+		card.addClass("duplicate_already_placed");
+	}
+}
+
+function doCorrectStuffTestMode(card){
+	//console.log("in doCorrectStuffTestMode, card = " + card.attr("id"));
+	card.css({"background-color":"#A7D8B3"});
+}
+function doIncorrectStuffTestMode(card){
+	//console.log("in doIncorrectStuffTestMode, card = " + card.attr("id"));
+	card.css({"background-color":"#EFBDC7"});
+}
+
+$(function () {
+	placeCards(cardArray);
+	
+	$("#items0,#items1,#items2,#items3,#items4,#items5").sortable({
+		connectWith: "#items1,#items2,#items3,#items4,#items5",
+		containment: "#bg",
+		start: function (event, ui) {
+			$("#feedback").html('');
+			// TEST MODE CODE
+			$(".column_fb").html('');
+			ui.item.toggleClass("highlight");
+			//console.log("taken from = " + event.target.id);
+			// if the card is taken from one of the 5 columns (not the starting position)
+			if(event.target.id == "items1" || event.target.id == "items2" || event.target.id == "items3" || event.target.id == "items4" || event.target.id == "items5"){
+				takenFrom0 = false;
+				
+				// I don't think we need this forthe Agile game - since there are no dupes in col1
+				// check to see if the card was taken from the feasibility column and check if it's an HD card
+				/*if((event.target.id == "items1" && ui.item.attr('matchid') == '1') || (event.target.id == "items1" && ui.item.attr('matchid') == 'HD') ){
+					//console.log('placedDupHD4 = ' + placedDupHD4);
+					takenFrom1 = true;
+					ui.item.addClass("taken_from_1");
+					//console.log("id = " + ui.item.attr('matchid'));
+				}*/
+			}
+			else{
+				takenFrom0 = true;
+				takenFrom1 = false;
+			}
+			takenFromColumn = event.target.id;
+			// adjust the height of the card that's being dragged because when loaded on our website, the card gets smaller. This added code will make the height of the card apper to not change on our website - but will get taller when run locally.
+			var height =  ui.item.height() + 15;
+			ui.item.css({'height':height});
+			//console.log("event.target.id = " + event.target.id);
+		},
+		stop: function (event, ui) {
+			ui.item.toggleClass("highlight");
+			//console.log("currentCard = " + currentCard);
+			$("#question-counter").html(questionCounterTxt1 + (totalCards-currentCard+1) + questionCounterTxt2 + totalCards + questionCounterTxt3);
+		},
+		receive: function (event, ui) {
+			//console.log("put on = " + event.target.id);
+			
+			// TEST MODE CODE
+			if(practiceMode==false){
+				//change the column attribute
+				$(ui.item).attr('column',event.target.id);
+				var columnNum = ($(ui.item).attr('column')).slice(5,6)
+				//console.log("columnNum = " + columnNum);
+				// check to see if the column has the max number of cards
+				if ($(this).children('li').length > window['columnLengthMax'+columnNum]) {
+					$("#cloumn-fb"+columnNum).html(columnLengthWarning1 + ' ' + window['columnLengthMax'+columnNum] + columnLengthWarning2 + ".");
+					$(ui.sender).sortable('cancel');
+					if(takenFrom0==true){
+						currentCard--;
+					}
+				}
+				else{
+					adjustColumnHeightTestMode(ui.item, columnNum, takenFromColumn);
+				}
+				// if the card is taken from the starting column and dropped on one of the five other columns
+				if(event.target.id != "items0" && takenFrom0==true){
+					currentCard++;
+					//$("#card" + currentCard).show();
+					$('#' + $("#items0 > li:first-child").attr("id")).show();
+				}
+				// if the card was taken from one of the 5 other columns and placed back on the starting column. Wanted to prevent the potential for a bunch of cards getting visible in column 0 
+				if(event.target.id == "items0" && takenFrom0==false){
+					currentCard--;
+				}
+				
+				if(currentCard > totalCards){
+					//console.log("THE END");
+					doEndStuff();
+				}
+			}
+			// PRACTICE MODE CODE
+			else{
+				var id = ui.item.attr("matchid");
+				//console.log("id = " + id);
+				
+				// I don't think we need this forthe Agile game - since there are no dupes in col1
+				//check to see if the card was taken from column 1
+				/*if(ui.item.hasClass("taken_from_1")){
+					if(ui.item.hasClass("duplicate_already_placed")){
+						handleDupHDCard(ui.item, event.target.id);
+					}
+					else{
+						ui.sender.sortable("cancel");
+					}
+				}*/		
+				// check if it's one of the TWO "Hold daily stand-up meetings" cards
+				if(id == "HD"){
+				//else if(id == "HD"){
+					handleDupHDCard(ui.item, event.target.id);
+				}
+				// check if it's one of the THREE "Remove impediments for the team" cards
+				else if(id == "RI"){
+					handleDupRIcard(ui.item, event.target.id);
+				}
+				// check if it's one of the TWO "Prepare stories of next iteration" cards
+				else if(id == "PS"){
+					handleDupPScard(ui.item, event.target.id);
+				}
+				else{
+					// CORRECT
+					if((id == 1 && event.target.id == "items1") || (id == 2 && event.target.id == "items2") || (id == 3 && event.target.id == "items3") || (id == 4 && event.target.id == "items4") || (id == 5 && event.target.id == "items5")){
+	
+						doCorrectStuff(ui.item, event.target.id);
+	
+					}
+					//INCORRECT
+					// I don't think we need this forthe Agile game - since there are no dupes in col1
+					//else{
+						//if(ui.item.hasClass("taken_from_1")){
+							//no change if allready placed in feasibility column
+						//}
+						else{
+							doIncorrectStuff(ui.item);
+							$("#feedback").css({"color":"red"});
+							$("#feedback").html(incorrectFBtxt);
+						}
+					//}
+				}
+			}
+		},
+		change: function(event, ui) {
+			ui.placeholder.css({visibility: 'visible', border : '2px solid yellow'});
+		},
+		cursorAt: { left:100, top:5 }
+	});
+	$("#items0,#items1,#items2,#items3,#items4,#items5").disableSelection();
+	
+});
+
+// **** Handle Duplicate - Hold daily stand-up meetings Card - practice mode
+function handleDupHDCard(currentDraggable, currentDroppable){
+	//console.log("handleDupHDCard -- currentDraggable = " + currentDraggable + " -- currentDroppable = " + currentDroppable);
+	
+	//dup card is dropped in Release Planning (col 3) and has not yet been placed in the Release Planning column 
+	if(currentDroppable == "items3"  && placedDupHD3 == false){		
+		doCorrectStuff(currentDraggable, currentDroppable);
+		placedDupHD3 = true;
+	}
+	//dup card is dropped in Iteration (col 4) and has not yet been placed in the Iteration column 
+	else if(currentDroppable == "items4"  && placedDupHD4 == false){		
+		doCorrectStuff(currentDraggable, currentDroppable);
+		placedDupHD4 = true;
+	}
+	else{
+		doIncorrectStuff(currentDraggable);
+		incorrectsound.play();
+	}
+}
+
+// **** Handle Duplicate - Hold daily stand-up meetings Card - test mode
+function handleDupHDCardTestMode(card, spot){
+	//console.log("handleDupHDCardTestMode -- card = " + card + " -- spot = " + spot);
+	//dup card is dropped in Release Planning and has not yet been placed in the Release Planning column 
+	if(spot == "items3"  && placedDupHD3 == false){		
+		doCorrectStuffTestMode(card, spot);
+		placedDupHD3 = true;
+		totalCorrect++;
+	}
+	//dup card is dropped in Iteration and has not yet been placed in the Iteration column 
+	else if(spot == "items4"  && placedDupHD4 == false){		
+		doCorrectStuffTestMode(card, spot);
+		placedDupHD4 = true;
+		totalCorrect++; 
+	}
+	else{
+		doIncorrectStuffTestMode(card);
+	}
+}
+
+
+// **** Handle Duplicate - Remove impediments for the team Card - practice mode
+function handleDupRIcard(currentDraggable, currentDroppable){
+	//console.log("handleDupPScard -- currentDraggable = " + currentDraggable + " -- currentDroppable = " + currentDroppable);
+	
+	//dup card is dropped in Initiation and has not yet been placed in the Initiation column 
+	if(currentDroppable == "items2"  && placedDupRI2 == false){		
+		doCorrectStuff(currentDraggable, currentDroppable);
+		placedDupRI2 = true;
+	}
+	//dup card is dropped in Release Planning  and has not yet been placed in the Release Planning  column 
+	else if(currentDroppable == "items3"  && placedDupRI3 == false){		
+		doCorrectStuff(currentDraggable, currentDroppable);
+		placedDupRI3 = true;
+	}
+	//dup card is dropped in Iteration and has not yet been placed in the Iteration column 
+	else if(currentDroppable == "items4"  && placedDupRI4 == false){		
+		doCorrectStuff(currentDraggable, currentDroppable);
+		placedDupRI4 = true;
+	}
+	else{
+		doIncorrectStuff(currentDraggable);
+		$("#feedback").css({"color":"red"});
+		$("#feedback").html(incorrectFBtxt);
+		incorrectsound.play();
+	}
+}
+
+// **** Handle Duplicate - Remove impediments for the team Card - test mode
+function handleDupRIcardTestMode(card, spot){
+	//console.log("handleDupRICardTestMode -- card = " + card + " -- spot = " + spot);
+	//dup card is dropped in Initiation and has not yet been placed in the Initiation column 
+	if(spot == "items2"  && placedDupRI2 == false){		
+		doCorrectStuffTestMode(card, spot);
+		placedDupRI2 = true;
+		totalCorrect++;
+	}
+	//dup card is dropped in Release Planning and has not yet been placed in the Release Planning  column 
+	else if(spot == "items3"  && placedDupRI3 == false){		
+		doCorrectStuffTestMode(card, spot);
+		placedDupRI3 = true;
+		totalCorrect++;
+	}
+	//dup card is dropped in Iteration and has not yet been placed in the Iteration column 
+	else if(spot == "items4"  && placedDupRI4 == false){		
+		doCorrectStuffTestMode(card, spot);
+		placedDupRI4 = true;
+		totalCorrect++;
+	}
+	else{
+		doIncorrectStuffTestMode(card);
+	}
+}
+
+
+// **** Handle Duplicate - prepare stories of next iteration Card - Practice mode
+function handleDupPScard(currentDraggable, currentDroppable){
+	//console.log("handleDupPScard -- currentDraggable = " + currentDraggable + " -- currentDroppable = " + currentDroppable);
+	//dup card is dropped in Release Planning and has not yet been placed in the Release Planning column 
+	if(currentDroppable == "items3"  && placedDupPS3 == false){		
+		doCorrectStuff(currentDraggable, currentDroppable);
+		placedDupPS3 = true;
+	}
+	//dup card is dropped in Iteration and has not yet been placed in the Iteration column 
+	else if(currentDroppable == "items4"  && placedDupPS4 == false){		
+		doCorrectStuff(currentDraggable, currentDroppable);
+		placedDupPS4 = true;
+	}
+	else{
+		doIncorrectStuff(currentDraggable);
+		$("#feedback").css({"color":"red"});
+		$("#feedback").html(incorrectFBtxt);
+		incorrectsound.play();
+	}
+}
+
+// **************************************************************************************************************** STILL NEED TO EDIT
+// **** Handle Duplicate - prepare stories of next iteration Card - test mode
+function handleDupPScardTestMode(card, spot){
+	//console.log("handleDupPSCardTestMode -- card = " + card + " -- spot = " + spot);
+	//dup card is dropped in Executing and has not yet been placed in the Executing column 
+	if(spot == "items3"  && placedDupPS3 == false){		
+		doCorrectStuffTestMode(card, spot);
+		placedDupPS3 = true;
+		totalCorrect++;
+	}
+	//dup card is dropped in M&C and has not yet been placed in the M&C column 
+	else if(spot == "items4"  && placedDupPS4 == false){		
+		doCorrectStuffTestMode(card, spot);
+		placedDupPS4 = true;
+		totalCorrect++;
+	}
+	else{
+		doIncorrectStuffTestMode(card);
+	}
+}
+
+
+function doEndStuff(){
+	//score = Math.round((totalCards/attempts)*100);
+	if(practiceMode==false){
+		$("#check-button").show();
+	}
+	else{
+		score = Math.round((totalCards/attempts)*100);
+		$("#instructions").html("<br><br><br><br>" + accuracyTxt + " <b>" + score + "%</b>. " + accuracyInstTxt);
+		$("#feedback").html(endPracticeModeCorrectTxt);
+		$("#check-feasibility-button").show();
+		// place the check Feasibility button
+		if(isRTL == false){
+			$("#check-feasibility-button").css({'margin-top': parseInt($('#items5').css('height')) + 50 });
+		}
+		else{
+			$("#check-feasibility-button").css({'margin-top': parseInt($('#items1').css('height')) + 50 });
+		}
+	}
+	//$("#check-button").css({""})
+	$("#question-counter").hide();
+	$("#shuffle-button").hide();
+}
+
+/* When the user clicks on the button, 
+toggle between hiding and showing the dropdown content */
+/*function dropDownClicked() {
+    document.getElementById("language-dropdown").classList.toggle("show");
+}*/
+
+// Close the dropdown if the user clicks outside of it
+/*window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}*/
+
+function shuffleArray(draggables){
+	//console.info("in shuffleArray, draggables = " + draggables);
+	for(var j, x, i = draggables.length; i; j = parseInt(Math.random() * i), x = draggables[--i], draggables[i] = draggables[j], draggables[j] = x);
+        return draggables;
+};
+function dropped(event, ui){
+	var currentDraggable = ui.draggable;
+	var currentDroppable = $("#"+event.target.id);		
+	//console.log("dropped, currentDraggable.attr('id') = " + currentDraggable.attr("id") + ", and currentDroppable = " + currentDroppable.attr("id"));
+}

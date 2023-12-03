@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0078)https://stream.rmcproject.com/ProcessChartGameAgile/processChart_Agile_v6.html -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Rita Mulcahy's Process Chart Game™</title>
+<link href="./global_v6.css" rel="stylesheet" type="text/css">
+<link href="./processChartGame_v6.css" rel="stylesheet" type="text/css">
+<script src="./jquery-3.5.1.min.js.download"></script>
+<script src="./jquery-ui-1.12.1.js.download"></script>
+<script src="./jquery.ui.touch-punch.js.download"></script>
+<!--<script src="script/jstween-1.2.js"></script>-->
+</head>
+<body data-new-gr-c-s-check-loaded="14.1047.0" data-gr-ext-installed="">
+<div id="intro" style="display: none;">
+  <img id="intro-img" src="./intro_bg.svg" width="1920" height="980">
+  <input id="begin-button" class="buttons buttons_hover" type="button" value="Click here to turn on sound effects." style="display: none;">
+</div>
+<input id="check-feasibility-button" class="buttons buttons_hover" type="button" value="Check Feasibility Column Order" style="display: none;">
+<div id="entire-game" style="">
+  <div id="bg" class="unselectable"> 
+    <!-- 
+    <a href="https://store.rmcproject.com/pmp-exam-prep-elearning-course-ninth-edition-180-day-subscription" target="_blank"> <img id="click-here" src="images/clickHere.png"  width="220" height="200"> </a>
+	--> 
+    <div id="mask" style="display: none;"></div>
+    <div id="reset-confirm" class="unselectable page_text" style="display: none;"><span>This will end your current game and start a new game in Practice Mode. </span>
+      <div id="spacer"></div>
+      <input id="reset-continue-button" class="buttons buttons_hover" type="button" value="CONTINUE">
+      <input id="reset-cancel-button" class="buttons buttons_hover" type="button" value="CANCEL">
+    </div>
+    <div id="mode-confirm" class="unselectable page_text" style="display: none;"><span>This will end your current progress and start a new game in TEST MODE.</span>
+      <div id="spacer"></div>
+      <input id="mode-continue-button" class="buttons buttons_hover" type="button" value="CONTINUE">
+      <input id="mode-cancel-button" class="buttons buttons_hover" type="button" value="CANCEL">
+    </div>
+    <div id="header-wrapper">
+      <div id="header1" class="page_text column_headers">Feasibility</div>
+      <div id="header2" class="page_text column_headers">Initiation</div>
+      <div id="header3" class="page_text column_headers">Release Planning</div>
+      <div id="header4" class="page_text column_headers">Iteration</div>
+      <div id="header5" class="page_text column_headers">Close-Out</div>
+    </div>
+    <div id="shuffle1" class="shuffle_cards" style="display: none;"></div>
+    <div id="shuffle2" class="shuffle_cards" style="display: none;"></div>
+    <div id="shuffle3" class="shuffle_cards" style="display: none;"></div>
+    <!--this is the list of all of the cards-->
+    <ul id="items1" class="items ui-sortable">
+      <div id="cloumn-fb1" class="column_fb ui-sortable-handle"></div>
+    </ul>
+    <ul id="items2" class="items ui-sortable">
+      <div id="cloumn-fb2" class="column_fb ui-sortable-handle"></div>
+    </ul>
+    <ul id="items3" class="items ui-sortable">
+      <div id="cloumn-fb3" class="column_fb ui-sortable-handle"></div>
+    </ul>
+    <ul id="items4" class="items ui-sortable">
+      <div id="cloumn-fb4" class="column_fb ui-sortable-handle"></div>
+    </ul>
+    <ul id="items5" class="items ui-sortable">
+      <div id="cloumn-fb5" class="column_fb ui-sortable-handle"></div>
+    </ul>
+    <ul id="items0" class="items ui-sortable"><li class="list ui-sortable-handle" id="card1" column="0" matchid="3" feasibilityid="undefined" style="">Calculate team velocity</li><li class="list ui-sortable-handle" id="card2" column="0" matchid="4" feasibilityid="undefined" style="display: none;">Prepare accceptance tests</li><li class="list ui-sortable-handle" id="card3" column="0" matchid="RI" feasibilityid="undefined" style="display: none;">Remove impediments for the team</li><li class="list ui-sortable-handle" id="card4" column="0" matchid="2" feasibilityid="undefined" style="display: none;">Develop project charter</li><li class="list ui-sortable-handle" id="card5" column="0" matchid="2" feasibilityid="undefined" style="display: none;">Create backlog of features</li><li class="list ui-sortable-handle" id="card6" column="0" matchid="2" feasibilityid="undefined" style="display: none;">Create high-level estimates using affinity estimating</li><li class="list ui-sortable-handle" id="card7" column="0" matchid="1" feasibilityid="0" style="display: none;">Project visioning takes place</li><li class="list ui-sortable-handle" id="card8" column="0" matchid="RI" feasibilityid="undefined" style="display: none;">Remove impediments for the team</li><li class="list ui-sortable-handle" id="card9" column="0" matchid="5" feasibilityid="undefined" style="display: none;">Obtain final release approval</li><li class="list ui-sortable-handle" id="card10" column="0" matchid="2" feasibilityid="undefined" style="display: none;">Identify stakeholders and contact</li><li class="list ui-sortable-handle" id="card11" column="0" matchid="3" feasibilityid="undefined" style="display: none;">Estimate how much work can be done</li><li class="list ui-sortable-handle" id="card12" column="0" matchid="2" feasibilityid="undefined" style="display: none;">Create team charter</li><li class="list ui-sortable-handle" id="card13" column="0" matchid="3" feasibilityid="undefined" style="display: none;">Perform story estimation using Planning Poker<sup>®</sup></li><li class="list ui-sortable-handle" id="card14" column="0" matchid="1" feasibilityid="2" style="display: none;">Create high-level user stories (Features)</li><li class="list ui-sortable-handle" id="card15" column="0" matchid="4" feasibilityid="undefined" style="display: none;">Build features as described in user stories</li><li class="list ui-sortable-handle" id="card16" column="0" matchid="PS" feasibilityid="undefined" style="display: none;">Prepare stories of next iteration</li><li class="list ui-sortable-handle" id="card17" column="0" matchid="5" feasibilityid="undefined" style="display: none;">Ensure procurement closure</li><li class="list ui-sortable-handle" id="card18" column="0" matchid="5" feasibilityid="undefined" style="display: none;">Hold final retrospective</li><li class="list ui-sortable-handle" id="card19" column="0" matchid="4" feasibilityid="undefined" style="display: none;">Update burnup charts</li><li class="list ui-sortable-handle" id="card20" column="0" matchid="3" feasibilityid="undefined" style="display: none;">Build a release plan</li><li class="list ui-sortable-handle" id="card21" column="0" matchid="3" feasibilityid="undefined" style="display: none;">Focus on how to deliver value</li><li class="list ui-sortable-handle" id="card22" column="0" matchid="3" feasibilityid="undefined" style="display: none;">Reprioritize the backlog</li><li class="list ui-sortable-handle" id="card23" column="0" matchid="PS" feasibilityid="undefined" style="display: none;">Prepare stories of next iteration</li><li class="list ui-sortable-handle" id="card24" column="0" matchid="3" feasibilityid="undefined" style="display: none;">Define "done"</li><li class="list ui-sortable-handle" id="card25" column="0" matchid="4" feasibilityid="undefined" style="display: none;">Identify acceptance tests for stories</li><li class="list ui-sortable-handle" id="card26" column="0" matchid="HD" feasibilityid="undefined" style="display: none;">Hold daily stand-up meetings</li><li class="list ui-sortable-handle" id="card27" column="0" matchid="HD" feasibilityid="undefined" style="display: none;">Hold daily stand-up meetings</li><li class="list ui-sortable-handle" id="card28" column="0" matchid="4" feasibilityid="undefined" style="display: none;">Hold iteration review</li><li class="list ui-sortable-handle" id="card29" column="0" matchid="1" feasibilityid="1" style="display: none;">Establish business case</li><li class="list ui-sortable-handle" id="card30" column="0" matchid="4" feasibilityid="undefined" style="display: none;">Perform iteration planning</li><li class="list ui-sortable-handle" id="card31" column="0" matchid="2" feasibilityid="undefined" style="display: none;">Create personas</li><li class="list ui-sortable-handle" id="card32" column="0" matchid="RI" feasibilityid="undefined" style="display: none;">Remove impediments for the team</li><li class="list ui-sortable-handle" id="card33" column="0" matchid="1" feasibilityid="3" style="display: none;">Establish high-level estimates</li><li class="list ui-sortable-handle" id="card34" column="0" matchid="2" feasibilityid="undefined" style="display: none;">Create product roadmap using story maps</li><li class="list ui-sortable-handle" id="card35" column="0" matchid="5" feasibilityid="undefined" style="display: none;">Archive project artifacts</li><li class="list ui-sortable-handle" id="card36" column="0" matchid="4" feasibilityid="undefined" style="display: none;">Test user stories</li><li class="list ui-sortable-handle" id="card37" column="0" matchid="2" feasibilityid="undefined" style="display: none;">Build a story map</li><li class="list ui-sortable-handle" id="card38" column="0" matchid="4" feasibilityid="undefined" style="display: none;">Collaborate with team to answer questions and obtain story signoff</li><li class="list ui-sortable-handle" id="card39" column="0" matchid="4" feasibilityid="undefined" style="display: none;">Hold retrospective</li><li class="list ui-sortable-handle" id="card40" column="0" matchid="5" feasibilityid="undefined" style="display: none;">Turn over maintenance of product release to another team</li><li class="list ui-sortable-handle" id="card41" column="0" matchid="4" feasibilityid="undefined" style="display: none;">Run exploratory tests</li><li class="list ui-sortable-handle" id="card42" column="0" matchid="3" feasibilityid="undefined" style="display: none;">Ensure there is shared understanding among team members</li><li class="list ui-sortable-handle" id="card43" column="0" matchid="3" feasibilityid="undefined" style="display: none;">Define the first iteration goal</li><li class="list ui-sortable-handle" id="card44" column="0" matchid="3" feasibilityid="undefined" style="display: none;">Slice user stories (decompose features)</li></ul>
+    <div id="instruction-container">
+      <div id="instructions" class="page_text"><b>PRACTICE MODE</b><br>Drag the blue cards below to the correct columns. You will get instant feedback on whether your choice was right or wrong, and you can keep trying to place each card in the correct column until you get the answer right. Once all the cards are placed, you can check the order of the cards in the FEASIBILITY COLUMN. Based on your accuracy, you can decide whether you want to try the exercise again in PRACTICE MODE, or to move on to the TEST MODE.</div>
+      <input id="mode-button" class="buttons buttons_hover" type="button" value="Go to Test Mode">
+      <div id="button-wrapper">
+        <div id="counter-wrapper">
+          <div id="question-counter" class="page_text">CARDS: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 44 of 44 to go</div>
+          <div id="feedback" class="page_text"></div>
+        </div>
+        <input id="shuffle-button" class="buttons buttons_hover" type="button" value="SHUFFLE CARDS">
+        <input id="reset-button" class="buttons buttons_hover" type="button" value="RESET">
+        <input id="instructions-button" class="buttons buttons_hover" type="button" value="INSTRUCTIONS">
+        <input id="check-button" class="buttons buttons_hover" type="button" value="CHECK ANSWERS" style="display: none;">
+      </div>
+    </div>
+    <!--<div class="page_text dropdown"></div>-->
+  </div>
+  <audio id="correct-sound">
+    <source src="sound/correct.mp3" type="audio/mp3">
+  </audio>
+  <audio id="incorrect-sound">
+    <source src="sound/incorrect.mp3" type="audio/mp3">
+  </audio>
+</div>
+
+<script type="text/javascript" src="./processChartGame_content_v6.js.download"></script>
+<script type="text/javascript" src="./processChartGame_code_v6.js.download"></script>
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>
